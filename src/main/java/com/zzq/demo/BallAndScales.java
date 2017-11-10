@@ -98,8 +98,10 @@ public class BallAndScales {
                 }
             }else{
                 //=========9-11号球有一个重了========
-                leftBalls = balls.subList(8,8);
-                rightBalls = balls.subList(9,9);
+                leftBalls.clear();
+                leftBalls.add(balls.get(8));
+                rightBalls.clear();
+                rightBalls.add(balls.get(9));
                 status = scales.testBalance(leftBalls, rightBalls);
                 //步骤1-1-1:9号球放入天平左侧，10号球放入天平右侧
                 if(status == ScalesStatus.balance){
