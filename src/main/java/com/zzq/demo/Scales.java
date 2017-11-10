@@ -3,7 +3,7 @@ package com.zzq.demo;
 import java.util.List;
 
 /**
- * Created by 332406 on 2017-11-09.
+ * Created by yhsyzzq on 2017-11-09.
  */
 public class Scales {
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by 332406 on 2017-11-09.
+ * Created by yhsyzzq on 2017-11-09.
  */
 public class BallAndScales {
 
@@ -32,7 +32,7 @@ public class BallAndScales {
             ball.setCode(i);
             ball.setWeight(weight);
             balls.add(ball);
-            System.out.println("====小球编号："+ball.getCode() + "小球重量："+ball.getWeight());
+            System.out.println("====小球编号：" + ball.getCode() + ", 小球重量：" + ball.getWeight());
         }
 
         //初始化天平
@@ -52,7 +52,7 @@ public class BallAndScales {
         return weight;
     }
 
-    public Ball searchSpecialBall() {
+    public static Ball searchSpecialBall() {
         List<Ball> specialBalls = null;
         List<Ball> leftBalls = null;
         List<Ball> rightBalls = null;
@@ -68,14 +68,14 @@ public class BallAndScales {
             specialBalls = balls.subList(DEFAULT_INITIAL_CAPACITY * 2 / 3, DEFAULT_INITIAL_CAPACITY * 3 / 3);
             //============继续测试================//
             //步骤1-1:1-3号球放入天平左侧，9-11号球放入天平右侧
-            leftBalls = balls.subList(0,3);
-            rightBalls = specialBalls.subList(8,11);
+            leftBalls = balls.subList(0, 3);
+            rightBalls = specialBalls.subList(8, 11);
             status = scales.testBalance(leftBalls, rightBalls);
             //===============重量相等，重量不一致的球在12号球=================
-            if(status == ScalesStatus.balance){
+            if (status == ScalesStatus.balance) {
                 specialBall = balls.get(11);
                 return specialBall;
-            }else if(status == ScalesStatus.turnLeft){
+            } else if (status == ScalesStatus.turnLeft) {
                 //=========9-11号球有一个轻了========
                 leftBalls.clear();
                 leftBalls.add(balls.get(8));
@@ -83,20 +83,20 @@ public class BallAndScales {
                 rightBalls.add(balls.get(9));
                 status = scales.testBalance(leftBalls, rightBalls);
                 //步骤1-1-1:9号球放入天平左侧，10号球放入天平右侧
-                if(status == ScalesStatus.balance){
+                if (status == ScalesStatus.balance) {
                     //====== 11号球较轻 =====
                     specialBall = balls.get(10);
                     return specialBall;
-                }else if(status == ScalesStatus.turnLeft){
+                } else if (status == ScalesStatus.turnLeft) {
                     //====== 10号球较轻 =====
                     specialBall = balls.get(9);
                     return specialBall;
-                }else{
+                } else {
                     //====== 9号球较轻 =====
                     specialBall = balls.get(8);
                     return specialBall;
                 }
-            }else{
+            } else {
                 //=========9-11号球有一个重了========
                 leftBalls.clear();
                 leftBalls.add(balls.get(8));
@@ -104,15 +104,15 @@ public class BallAndScales {
                 rightBalls.add(balls.get(9));
                 status = scales.testBalance(leftBalls, rightBalls);
                 //步骤1-1-1:9号球放入天平左侧，10号球放入天平右侧
-                if(status == ScalesStatus.balance){
+                if (status == ScalesStatus.balance) {
                     //====== 11号球较重 =====
                     specialBall = balls.get(10);
                     return specialBall;
-                }else if(status == ScalesStatus.turnLeft){
+                } else if (status == ScalesStatus.turnLeft) {
                     //====== 10号球较重 =====
                     specialBall = balls.get(9);
                     return specialBall;
-                }else{
+                } else {
                     //====== 9号球较重 =====
                     specialBall = balls.get(8);
                     return specialBall;
@@ -121,18 +121,168 @@ public class BallAndScales {
         }
         //============1-4号球的总重量比5-8号球的总重量要大，说明9-12号球没特殊小球================
         else if (status == ScalesStatus.turnLeft) {
+            //1号球+5,6,7号球放入天平左侧；8,9,10,11号球放入天平右侧
+            leftBalls = new ArrayList<Ball>();
+            leftBalls.add(balls.get(0));
+            leftBalls.add(balls.get(4));
+            leftBalls.add(balls.get(5));
+            leftBalls.add(balls.get(6));
 
+            rightBalls = new ArrayList<Ball>();
+            rightBalls.add(balls.get(7));
+            rightBalls.add(balls.get(8));
+            rightBalls.add(balls.get(9));
+            rightBalls.add(balls.get(10));
 
-        }
+            status = scales.testBalance(leftBalls, rightBalls);
+            if (status == ScalesStatus.balance) {
+                //两边平衡说明2,3,4号小球中的有一个重了
+                leftBalls = new ArrayList<Ball>();
+                leftBalls.add(balls.get(1));
+                rightBalls = new ArrayList<Ball>();
+                rightBalls.add(balls.get(2));
+                status = scales.testBalance(leftBalls, rightBalls);
 
-        else {
+                if (status == ScalesStatus.balance) {
+                    //====== 4号球较重 =====
+                    specialBall = balls.get(3);
+                    return specialBall;
+                } else if (status == ScalesStatus.turnLeft) {
+                    //====== 2号球较重 =====
+                    specialBall = balls.get(1);
+                    return specialBall;
+                } else {
+                    //====== 3号球较重 =====
+                    specialBall = balls.get(2);
+                    return specialBall;
+                }
+            } else if (status == ScalesStatus.turnLeft) {
+                //通过假设法推断8号球轻了或者1号球重了
+                //两边平衡说明2,3,4号小球中的有一个重了
+                leftBalls = new ArrayList<Ball>();
+                leftBalls.add(balls.get(0));
+                rightBalls = new ArrayList<Ball>();
+                rightBalls.add(balls.get(1));
+                status = scales.testBalance(leftBalls, rightBalls);
 
+                if (status == ScalesStatus.balance) {
+                    //====== 8号球较轻 =====
+                    specialBall = balls.get(7);
+                    return specialBall;
+                } else if (status == ScalesStatus.turnLeft) {
+                    //====== 1号球较重 =====
+                    specialBall = balls.get(0);
+                    return specialBall;
+                } else {
+                    //此种情况不可能发生，因为1号球较重
+                }
+            } else {
+                //根据假设法推断 5,6,7号球有一个重了
+                leftBalls = new ArrayList<Ball>();
+                leftBalls.add(balls.get(4));
+                rightBalls = new ArrayList<Ball>();
+                rightBalls.add(balls.get(5));
+                status = scales.testBalance(leftBalls, rightBalls);
+
+                if (status == ScalesStatus.balance) {
+                    //====== 7号球较重 =====
+                    specialBall = balls.get(6);
+                    return specialBall;
+                } else if (status == ScalesStatus.turnLeft) {
+                    //====== 5号球较重 =====
+                    specialBall = balls.get(4);
+                    return specialBall;
+                } else {
+                    //====== 6号球较重 =====
+                    specialBall = balls.get(5);
+                    return specialBall;
+                }
+            }
+        } else {
+            //2,3,4,5号球放入天平左侧；1 + 9,10,11号球放入天平右侧
+            leftBalls = new ArrayList<Ball>();
+            leftBalls.add(balls.get(1));
+            leftBalls.add(balls.get(2));
+            leftBalls.add(balls.get(3));
+            leftBalls.add(balls.get(4));
+
+            rightBalls = new ArrayList<Ball>();
+            rightBalls.add(balls.get(0));
+            rightBalls.add(balls.get(8));
+            rightBalls.add(balls.get(9));
+            rightBalls.add(balls.get(10));
+            status = scales.testBalance(leftBalls, rightBalls);
+            if (status == ScalesStatus.balance) {
+                //根据假设法推断，6,7,8号球有一个重了
+                leftBalls = new ArrayList<Ball>();
+                leftBalls.add(balls.get(5));
+                rightBalls = new ArrayList<Ball>();
+                rightBalls.add(balls.get(6));
+                status = scales.testBalance(leftBalls, rightBalls);
+
+                if (status == ScalesStatus.balance) {
+                    //====== 8号球较重 =====
+                    specialBall = balls.get(7);
+                    return specialBall;
+                } else if (status == ScalesStatus.turnLeft) {
+                    //====== 6号球较重 =====
+                    specialBall = balls.get(5);
+                    return specialBall;
+                } else {
+                    //====== 7号球较重 =====
+                    specialBall = balls.get(6);
+                    return specialBall;
+                }
+            } else if (status == ScalesStatus.turnLeft) {
+                //5号球重了或者1号球轻了
+                leftBalls = new ArrayList<Ball>();
+                leftBalls.add(balls.get(0));
+                rightBalls = new ArrayList<Ball>();
+                rightBalls.add(balls.get(1));
+                status = scales.testBalance(leftBalls, rightBalls);
+
+                if (status == ScalesStatus.balance) {
+                    //====== 5号球较重 =====
+                    specialBall = balls.get(4);
+                    return specialBall;
+                } else if (status == ScalesStatus.turnRight) {
+                    //====== 1号球较轻 =====
+                    specialBall = balls.get(5);
+                    return specialBall;
+                } else {
+                    //====== 此种情况不可能发生 =====
+                }
+            } else {
+                //根据假设法推断2,3,4中有一个球轻了
+                //5号球重了或者1号球轻了
+                leftBalls = new ArrayList<Ball>();
+                leftBalls.add(balls.get(1));
+                rightBalls = new ArrayList<Ball>();
+                rightBalls.add(balls.get(2));
+                status = scales.testBalance(leftBalls, rightBalls);
+
+                if (status == ScalesStatus.balance) {
+                    //====== 4号球较轻 =====
+                    specialBall = balls.get(3);
+                    return specialBall;
+                } else if (status == ScalesStatus.turnLeft) {
+                    //====== 3号球较轻 =====
+                    specialBall = balls.get(2);
+                    return specialBall;
+                } else {
+                    //====== 2号球较轻 =====
+                    specialBall = balls.get(0);
+                    return specialBall;
+                }
+            }
         }
         return null;
     }
 
     public static void main(String[] args) {
-        init();
+        BallAndScales.init();
+        Ball specialBall = BallAndScales.searchSpecialBall();
+        System.out.println("推断的质量不同的小球编号：" + specialBall.getCode() + "， 重量：" + specialBall.getWeight());
     }
 
 }
